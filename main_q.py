@@ -23,15 +23,15 @@ def reward_dynamics(state):
         return -10
 
 def getQ(state, action):
-    return q.get((state, action), 1000.0)
+    return q.get((state, action), 0)
     # return self.q.get((state, action), 1.0)
 
-def learnQ(state, action, reward, value):
-    oldv = q.get((state, action))
-    if oldv is None:
-        q[(state, action)] = 1000 + alpha * (value - 1000)
-    else:
-        q[(state, action)] = oldv + alpha * (value - oldv)
+# def learnQ(state, action, reward, value):
+#     oldv = q.get((state, action))
+#     if oldv is None:
+#         q[(state, action)] = oldv + alpha * (value - oldv)
+#     else:
+#         q[(state, action)] = oldv + alpha * (value - oldv)
 
 def chooseAction(state):
     if random.random() < epsilon:
@@ -49,27 +49,41 @@ def chooseAction(state):
         action = actions[i]
     return action
 
-def learn(state1, action1, reward, state2):
-    maxqnew = max([getQ(state2, a) for a in actions])
-    learnQ(state1, action1, reward, reward + gamma*maxqnew)
+# def learn(state1, action1, reward, state2):
+#     maxqnew = max([getQ(state2, a) for a in actions])
+#     learnQ(state1, action1, reward, reward + gamma*maxqnew)
 
 
-for i in range(0, num_of_episodes):
-    curr_state = (-GRID, -GRID)
+curr_state = (-GRID, -GRID)
+
+for time_step in range(0, 100):
+	action = chooseAction(curr_state)
+	design_mat_f = [curr_state, action]
+	next_state = (max(min(curr_state[0] + action[0], GRID), -GRID) , max(min(curr_state[1] + action[1], GRID), -GRID))
+	design_mat_t = reward_dynamics(next_state) + gamma * max([getQ(next_state, a) for a in actions])
+
+
+
+
+
+
+
+# for i in range(0, num_of_episodes):
+#     curr_state = (-GRID, -GRID)
     
-    while curr_state != term_state:
-        action = chooseAction(curr_state)
-        next_state = (max(min(curr_state[0] + action[0], GRID), -GRID) , max(min(curr_state[1] + action[1], GRID), -GRID))
-        learn(curr_state, action, reward_dynamics(next_state), next_state)
-        curr_state = next_state
-    print q
-    print '\n'
+#     while curr_state != term_state:
+#         action = chooseAction(curr_state)
+#         next_state = (max(min(curr_state[0] + action[0], GRID), -GRID) , max(min(curr_state[1] + action[1], GRID), -GRID))
+#         learn(curr_state, action, reward_dynamics(next_state), next_state)
+#         curr_state = next_state
+#     print q
+#     print '\n'
 
-for state in states:
-    final_action = chooseAction(state)
-    plt.quiver(state[0], state[1], final_action[0], final_action[1])
+# for state in states:
+#     final_action = chooseAction(state)
+#     plt.quiver(state[0], state[1], final_action[0], final_action[1])
 
-plt.xlim(-GRID - 1, GRID + 1)
-plt.ylim(-GRID - 1, GRID + 1)
-plt.show()
+# plt.xlim(-GRID - 1, GRID + 1)
+# plt.ylim(-GRID - 1, GRID + 1)
+# plt.show()
 

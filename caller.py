@@ -19,8 +19,11 @@ for s in states:
 
 print T
 
+
 U = updateObj.value_iteration ( T , states, GRID)
 policy = updateObj.best_policy(U, T, states, GRID)
+
+
 
 
 for x in xrange(-GRID, GRID + 1):
